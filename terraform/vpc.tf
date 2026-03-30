@@ -15,7 +15,10 @@ resource "aws_subnet" "self_heal_public_subnet" {
   availability_zone = each.key
 
   tags = {
-    Name = "self_heal_public_subnet"
+    Name = "self-heal-public-${each.key}"
+    "kubernetes.io/cluster/self-heal-cluster" = "owned"
+    "kubernetes.io/role/elb" = "1"
+
   }
 }
 
@@ -26,7 +29,9 @@ resource "aws_subnet" "self_heal_private_subnet" {
   availability_zone = each.key
 
   tags = {
-    Name = "self_heal_private_subnet"
+    Name = "self-heal-private-${each.key}"
+    "kubernetes.io/cluster/self-heal-cluster" = "owned"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
