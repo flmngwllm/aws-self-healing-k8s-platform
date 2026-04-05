@@ -10,15 +10,15 @@ resource "aws_eks_cluster" "self_heal_cluster" {
 
   vpc_config {
     subnet_ids = concat(
-      values(aws_subnet.self_heal_public_subnet)[*].id, 
+      values(aws_subnet.self_heal_public_subnet)[*].id,
       values(aws_subnet.self_heal_private_subnet)[*].id
     )
     # Enable both private and public access to the EKS API server
     endpoint_private_access = true
     endpoint_public_access  = true
   }
-  
-   tags = {
+
+  tags = {
     Name = "self-heal-cluster"
   }
 
@@ -38,7 +38,7 @@ resource "aws_eks_node_group" "self_heal_node_group" {
   node_role_arn   = aws_iam_role.self_heal_node_group_role.arn
   subnet_ids      = values(aws_subnet.self_heal_private_subnet)[*].id
   instance_types  = ["t3.medium"]
-  disk_size = 30
+  disk_size       = 30
 
   scaling_config {
     desired_size = 1

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from awsutils import send_sns_alert, save_alert_to_dynamodb
+from .awsutils import send_sns_alert, save_alert_to_dynamodb
 
 app = FastAPI()
 
