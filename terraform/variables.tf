@@ -4,19 +4,19 @@ variable "REGION" {
 }
 
 variable "public_subnets" {
-    type = map(number)
-    default = {
-        "us-east-1a" = 1,
-        "us-east-1b" = 2
-    }
-  
+  type = map(number)
+  default = {
+    "us-east-1a" = 1,
+    "us-east-1b" = 2
+  }
+
 }
 
 variable "private_subnets" {
-    type = map(number)
-    default = {
-        "us-east-1a" = 3,
-        "us-east-1b" = 4
-    }
+  type = map(number)
+  default = {
+    "us-east-1a" = 3,
+    "us-east-1b" = 4
+  }
 }
 
