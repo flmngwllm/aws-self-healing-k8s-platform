@@ -1,6 +1,7 @@
 import boto3
 import os
-import time
+import time 
+
 
 
 sns = boto3.client('sns', region_name='us-east-1')
@@ -26,6 +27,17 @@ def save_alert_to_dynamodb(alert_id, severity, message):
     if not DYNAMODB_TABLE_NAME:
         print("DYNAMODB_TABLE_NAME does not exist. Unable to save alert.")
         return
+    
+    if severity == 'critical':
+        remediation_action = "restarted pod"
+        print("restarted pod")
+    else:
+        remediation_action = None
+
+    if severity == 'critical':
+        status = "remediated"
+    else:
+        status = "open"
 
     table = dynamodb.Table(DYNAMODB_TABLE_NAME)
     table.put_item(
@@ -34,7 +46,20 @@ def save_alert_to_dynamodb(alert_id, severity, message):
             'severity': severity,
             'alert_message': message,
             'timestamp': int(time.time()),
-            'status': 'open',
-            'remediation_action': None,
+            'status': status,
+            'remediation_action': remediation_action,
         }
     )
+
+
+def get_incidents_from_dynamodb():
+    if not DYNAMODB_TABLE_NAME:
+        print("DYNAMODB_TABLE_NAME does not exist. Unable to fetch incidents.")
+        return 
+    table = dynamodb.Table(DYNAMODB_TABLE_NAME)
+    response = table.scan()
+    items = response.get('Items', [])
+    
+    for item in items:
+        print(f"Incident ID: {item['incident_id']}, Severity: {item['severity']}, Message: {item['alert_message']}, Status: {item['status']}, Remediation Action: {item['remediation_action']}")
+    return items
