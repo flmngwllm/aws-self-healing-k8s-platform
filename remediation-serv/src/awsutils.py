@@ -61,5 +61,5 @@ def get_incidents_from_dynamodb():
     items = response.get('Items', [])
     
     for item in items:
-        print(f"Incident ID: {item['incident_id']}, Severity: {item['severity']}, Message: {item['alert_message']}, Status: {item['status']}, Remediation Action: {item['remediation_action']}")
+        print(f"Incident ID: {item('incident_id')}, Severity: {item('severity')}, Message: {item('alert_message')}, Status: {item('status')}, Remediation Action: {item('remediation_action')}")
     return items
