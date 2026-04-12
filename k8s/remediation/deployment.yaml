@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remediation-serv-deployment
+  labels:
+    app: remediation-serv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remediation-serv
+  template:
+    metadata:
+      labels:
+        app: remediation-serv
+        tier: backend
+    spec:
+      serviceAccountName: remediation-serv-sa
+      containers:
+      - name: remediation-serv
+        image: 831274730062.dkr.ecr.us-east-1.amazonaws.com/self-heal-remediation-serv:v1 
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DYNAMODB_TABLE_NAME
+          value: self-heal-incidents
+        - name: SNS_TOPIC_ARN
+          value: arn:aws:sns:us-east-1:831274730062:self-heal-updates-topic
