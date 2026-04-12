@@ -21,7 +21,7 @@ variable "private_subnets" {
 }
 
 variable "alert_email" {
-  type = string
+  type    = string
   default = "flmngwllm232@gmail.com"
 }
 

@@ -8,11 +8,11 @@ output "sns_topic_arn" {
 }
 
 
-output "remediation_serv_respository_uri"{
-    value = aws_ecr_repository.remediation_serv_repository.repository_url
+output "remediation_serv_respository_uri" {
+  value = aws_ecr_repository.remediation_serv_repository.repository_url
 }
 
 
-output "app_repository_uri"{
-    value = aws_ecr_repository.app_repository.repository_url
+output "app_repository_uri" {
+  value = aws_ecr_repository.app_repository.repository_url
 }
