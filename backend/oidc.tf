@@ -14,7 +14,7 @@ resource "aws_iam_role" "self-heal_github_actions" {
       {
         Effect = "Allow",
         Principal = {
-          Federated = "${data.aws_iam_openid_connect_provider.self-heal_github.arn}"
+          Federated = data.aws_iam_openid_connect_provider.self-heal_github.arn
         },
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy" "self-heal_github_actions_policy" {
       {
         Effect   = "Allow",
         Action   = ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:DeleteItem", "dynamodb:DescribeTable"],
-        Resource = "arn:aws:dynamodb:us-east-1:831274730062:table/self-heal-terraform-locks"
+        Resource = "arn:aws:dynamodb:us-east-1:${data.aws_caller_identity.current.account_id}:table/self-heal-terraform-locks"
       },
 
       # --- EC2 for networking ---
