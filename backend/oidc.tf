@@ -2,6 +2,8 @@ data "aws_iam_openid_connect_provider" "self-heal_github" {
   url = "https://token.actions.githubusercontent.com"
 }
 
+data "aws_caller_identity" "current" {}
+
 
 resource "aws_iam_role" "self-heal_github_actions" {
   name = "self-heal-github-actions-role"
@@ -27,7 +29,7 @@ resource "aws_iam_role" "self-heal_github_actions" {
       {
         Effect = "Allow",
         Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:user/self-heal-platform"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/self-heal-platform"
         },
         Action = "sts:AssumeRole"
       }
