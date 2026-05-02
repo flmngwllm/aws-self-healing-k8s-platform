@@ -15,8 +15,8 @@ resource "aws_dynamodb_table" "self_heal_terraform_locks" {
   }
 
   tags = {
-  Name        = "self-heal-terraform-locks"
-  Project     = "self-heal-platform"
-  Environment = "bootstrap"
-}
+    Name        = "self-heal-terraform-locks"
+    Project     = "self-heal-platform"
+    Environment = "bootstrap"
+  }
 }
