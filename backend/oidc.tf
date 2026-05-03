@@ -139,7 +139,7 @@ resource "aws_iam_role_policy" "self-heal_github_actions_policy" {
           "sns:CreateTopic", "sns:DeleteTopic", "sns:GetTopicAttributes",
           "sns:SetTopicAttributes", "sns:ListTagsForResource", "sns:TagResource",
           "sns:UntagResource", "sns:Subscribe", "sns:Unsubscribe",
-          "sns:ListSubscriptionsByTopic", "sns:Publish"
+          "sns:ListSubscriptionsByTopic", "sns:Publish", "sns:GetSubscriptionAttributes"
         ],
         Resource = "*"
     }
