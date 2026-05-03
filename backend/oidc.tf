@@ -81,11 +81,20 @@ resource "aws_iam_role_policy" "self-heal_github_actions_policy" {
         ]
       },
       {
-        Effect   = "Allow",
-        Action   = ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:DeleteItem", "dynamodb:DescribeTable",
-                     "dynamodb:CreateTable", "dynamodb:DeleteTable", "dynamodb:UpdateTable",
-                     "dynamodb:DescribeTable", "dynamodb:TagResource", "dynamodb:UntagResource",
-                     "dynamodb:ListTagsOfResource"],
+        Effect = "Allow",
+        Action = ["dynamodb:CreateTable", "dynamodb:DeleteTable", "dynamodb:UpdateTable",
+          "dynamodb:DescribeTable", "dynamodb:DescribeContinuousBackups",
+          "dynamodb:UpdateContinuousBackups", "dynamodb:TagResource",
+          "dynamodb:UntagResource", "dynamodb:ListTagsOfResource"
+        ],
+        Resource = "arn:aws:dynamodb:us-east-1:${data.aws_caller_identity.current.account_id}:table/self-heal-incidents"
+      },
+
+      {
+        Effect = "Allow",
+        Action = ["dynamodb:PutItem", "dynamodb:GetItem",
+          "dynamodb:DeleteItem", "dynamodb:DescribeTable"
+        ],
         Resource = "arn:aws:dynamodb:us-east-1:${data.aws_caller_identity.current.account_id}:table/self-heal-terraform-locks"
       },
 
