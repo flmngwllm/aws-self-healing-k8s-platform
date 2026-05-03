@@ -16,6 +16,10 @@ permissions:
   id-token: write
   contents: read
 
+defaults:
+  run:
+    working-directory: terraform
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -26,7 +30,7 @@ jobs:
       - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with: 
-          role-to-assume: ${{ secrets.ACTIONS_ROLE_ARN}}
+          role-to-assume: ${{ secrets.ACTIONS_ROLE_ARN }}
           aws-region: us-east-1
       
       - name: Terraform setup
@@ -46,4 +50,4 @@ jobs:
 
       - name: Terraform Apply 
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: terraform apply -input=false -auto-approve
+        run: terraform apply -input=false -auto-approve tfplan
