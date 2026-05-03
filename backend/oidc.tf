@@ -142,7 +142,7 @@ resource "aws_iam_role_policy" "self-heal_github_actions_policy" {
         Resource = "*"
       },
       # --- SNS ---
-    {
+      {
         Effect = "Allow",
         Action = [
           "sns:CreateTopic", "sns:DeleteTopic", "sns:GetTopicAttributes",
@@ -151,7 +151,7 @@ resource "aws_iam_role_policy" "self-heal_github_actions_policy" {
           "sns:ListSubscriptionsByTopic", "sns:Publish", "sns:GetSubscriptionAttributes"
         ],
         Resource = "*"
-    }
+      }
     ]
   })
 }
