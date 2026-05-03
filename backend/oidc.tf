@@ -83,7 +83,7 @@ resource "aws_iam_role_policy" "self-heal_github_actions_policy" {
       {
         Effect = "Allow",
         Action = ["dynamodb:CreateTable", "dynamodb:DeleteTable", "dynamodb:UpdateTable",
-          "dynamodb:DescribeTable", "dynamodb:DescribeContinuousBackups",
+          "dynamodb:DescribeTable", "dynamodb:DescribeContinuousBackups", "dynamodb:DescribeTimeToLive",
           "dynamodb:UpdateContinuousBackups", "dynamodb:TagResource",
           "dynamodb:UntagResource", "dynamodb:ListTagsOfResource"
         ],
