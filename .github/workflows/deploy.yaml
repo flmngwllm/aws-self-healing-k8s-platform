@@ -1,5 +1,6 @@
 name: Build Images for ArgoCD
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
