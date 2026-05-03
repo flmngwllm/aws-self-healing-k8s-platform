@@ -1,4 +1,4 @@
-name: Deploy Infra 
+name: Build Images for ArgoCD
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   deploy:
@@ -39,7 +39,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$ECR_IMAGE_TAG -f app/Dockerfile app 
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$ECR_IMAGE_TAG"
           echo "Docker image pushed: $ECR_IMAGE_TAG pushed to ECR" 
-          echo ""$ECR_REGISTRY/$ECR_REPOSITORY:$ECR_IMAGE_TAG"
+          echo "$ECR_REGISTRY/$ECR_REPOSITORY:$ECR_IMAGE_TAG"
 
       - name: Build remediation image
         env:
@@ -51,6 +51,19 @@ jobs:
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$ECR_IMAGE_TAG"
           echo "Docker image pushed: $ECR_IMAGE_TAG pushed to ECR" 
           echo "$ECR_REGISTRY/$ECR_REPOSITORY:$ECR_IMAGE_TAG"
+
+      - name: update manifests
+        run: |
+          sed -i "s|image: .*self-heal-app:.*|image: ${{ steps.ecr-login.outputs.registry }}/self-heal-app:${{ github.sha }}|g" k8s/app/deployment.yaml
+          sed -i "s|image: .*self-heal-remediation-serv:.*|image: ${{ steps.ecr-login.outputs.registry }}/self-heal-remediation-serv:${{ github.sha }}|g" k8s/remediation/deployment.yaml
+        
+      - name: Commit manifest updates
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add k8s/app/deployment.yaml k8s/remediation/deployment.yaml
+          git commit -m "Update image tags in manifests for commit ${{ github.sha }}" || echo "No changes to commit"
+          git push 
       
       
 
