@@ -18,7 +18,7 @@ spec:
       serviceAccountName: remediation-serv-sa
       containers:
       - name: remediation-serv
-        image: 831274730062.dkr.ecr.us-east-1.amazonaws.com/self-heal-remediation-serv:902dfbecb6d14825b5e53f51daceecaf77c84696
+        image: 831274730062.dkr.ecr.us-east-1.amazonaws.com/self-heal-remediation-serv:196f3a903d9b722fa3c4df3f045b57fba98e8d25
         ports:
         - containerPort: 8080
         env:
