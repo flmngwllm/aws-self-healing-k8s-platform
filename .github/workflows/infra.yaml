@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - "terraform/**"
+      - "terraform/core/**"
   pull_request:
     branches:
       - main
     paths:
-      - "terraform/**"
+      - "terraform/core/**"
 
 permissions:
   id-token: write
@@ -18,7 +18,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: terraform
+    working-directory: terraform/core/
 
 jobs:
   terraform:
