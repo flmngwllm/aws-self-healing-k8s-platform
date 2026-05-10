@@ -11,10 +11,6 @@ resource "helm_release" "self_heal_argocd" {
       value = "LoadBalancer"
     }
   ]
-  depends_on = [
-    helm_release.self_heal_argocd,
-    time_sleep.wait_for_gha_eks_access
-  ]
 }
 
 
