@@ -104,3 +104,8 @@ resource "aws_eks_access_policy_association" "self_heal_user_admin" {
 
   depends_on = [aws_eks_access_entry.self_heal_user_access]
 }
+
+resource "time_sleep" "delay_for_access_entry" {
+  depends_on      = [aws_eks_access_policy_association.self_heal_user_admin]
+  create_duration = "120s"
+}
