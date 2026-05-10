@@ -105,7 +105,18 @@ resource "aws_eks_access_policy_association" "self_heal_user_admin" {
   depends_on = [aws_eks_access_entry.self_heal_user_access]
 }
 
-resource "time_sleep" "delay_for_access_entry" {
-  depends_on      = [aws_eks_access_policy_association.self_heal_user_admin]
-  create_duration = "120s"
+resource "time_sleep" "wait_for_gha_eks_access" {
+  depends_on = [
+    aws_eks_access_policy_association.self_heal_gha_admin
+  ]
+
+  create_duration = "60s"
+}
+
+resource "time_sleep" "wait_for_argocd_crds" {
+  depends_on = [
+    helm_release.self_heal_argocd
+  ]
+
+  create_duration = "30s"
 }

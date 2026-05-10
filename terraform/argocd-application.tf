@@ -27,5 +27,8 @@ resource "kubernetes_manifest" "self_heal_argocd_app" {
       }
     }
   }
-  depends_on = [helm_release.self_heal_argocd]
+  depends_on = [helm_release.self_heal_argocd,
+    time_sleep.wait_for_gha_eks_access,
+    time_sleep.wait_for_argocd_crds
+  ]
 }
