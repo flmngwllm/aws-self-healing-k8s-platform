@@ -65,6 +65,27 @@ resource "aws_eks_node_group" "self_heal_node_group" {
 }
 
 
+resource "aws_eks_access_entry" "self_heal_gha_access" {
+  cluster_name  = aws_eks_cluster.self_heal_cluster.name
+  principal_arn = "arn:aws:iam::831274730062:role/self-heal-github-actions-role"
+  type          = "STANDARD"
+
+}
+
+resource "aws_eks_access_policy_association" "self_heal_gha_admin" {
+  cluster_name  = aws_eks_cluster.self_heal_cluster.name
+  principal_arn = "arn:aws:iam::831274730062:role/self-heal-github-actions-role"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [
+    aws_eks_access_entry.self_heal_gha_access
+  ]
+}
+
+
 
 resource "aws_eks_access_entry" "self_heal_user_access" {
   cluster_name  = aws_eks_cluster.self_heal_cluster.name
