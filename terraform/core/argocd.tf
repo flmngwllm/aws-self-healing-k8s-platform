@@ -7,10 +7,15 @@ resource "helm_release" "self_heal_argocd" {
 
   set = [
     {
-      name  = "service.type"
+      name  = "server.service.type"
       value = "LoadBalancer"
     }
   ]
+  depends_on = [
+  aws_eks_node_group.self_heal_node_group,
+  aws_eks_access_policy_association.self_heal_user_admin,
+  aws_eks_access_policy_association.self_heal_gha_admin
+]
 }
 
 

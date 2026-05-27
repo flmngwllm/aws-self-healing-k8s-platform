@@ -35,9 +35,7 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes = {
-    host                   = data.aws_eks_cluster.self_heal_cluster.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.self_heal_cluster.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.self_heal_cluster.token
+    config_path = "~/.kube/config"
   }
 }
 
