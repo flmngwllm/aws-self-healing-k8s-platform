@@ -4,3 +4,4 @@ resources:
   - remediation/serviceaccount.yaml
   - remediation/deployment.yaml
   - remediation/service.yaml
+  - monitoring/test-alert-rule.yaml
