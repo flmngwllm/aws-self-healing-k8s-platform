@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from .awsutils import send_sns_alert, save_alert_to_dynamodb, get_incidents_from_dynamodb
+from fastapi import Request
 
 app = FastAPI()
 
@@ -41,5 +42,5 @@ async def receive_alert(request: Request):
     print(f"Received alert: {alert.id} with severity {alert.severity} and message: {alert.message}")
     save_alert_to_dynamodb(alert.id, alert.severity, alert.message)
     send_sns_alert(alert.id, alert.severity, alert.message)
-    
+
     return {"status": "alert received"}
