@@ -9,6 +9,12 @@ resource "helm_release" "kube_prometheus_stack" {
   values = [
     yamlencode({
       alertmanager = {
+        enabled = true
+
+        alertmanagerSpec = {
+          replicas = 1
+        }
+
         config = {
           global = {
             resolve_timeout = "5m"
@@ -25,6 +31,7 @@ resource "helm_release" "kube_prometheus_stack" {
           receivers = [
             {
               name = "remediation-webhook"
+
               webhook_configs = [
                 {
                   url           = "http://remediation-serv-service.default.svc.cluster.local/alert"
