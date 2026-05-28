@@ -3,6 +3,8 @@ kind: PrometheusRule
 metadata:
   name: self-heal-test-alert
   namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
 spec:
   groups:
     - name: self-heal-test-group
