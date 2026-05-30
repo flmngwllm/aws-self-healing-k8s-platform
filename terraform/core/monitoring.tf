@@ -18,7 +18,7 @@ resource "helm_release" "kube_prometheus_stack" {
         }
 
         route = {
-          receiver        = "remediation-webhook"
+          receiver        = "null"
           group_by        = ["alertname"]
           group_wait      = "10s"
           group_interval  = "30s"
@@ -26,9 +26,9 @@ resource "helm_release" "kube_prometheus_stack" {
 
           routes = [
             {
-              receiver = "null"
+              receiver = "remediation-webhook"
               matchers = [
-                "alertname = Watchdog"
+                "alertname =~ SelfHeal.*"
               ]
             }
           ]

@@ -10,7 +10,6 @@ SNS_TOPIC_ARN = os.getenv('SNS_TOPIC_ARN')
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 DYNAMODB_TABLE_NAME = os.getenv('DYNAMODB_TABLE_NAME')
 
-
 def send_sns_alert(alert_id, severity, message):
     if not SNS_TOPIC_ARN:
         print("SNS_TOPIC_ARN is not set. Unable to send alert.")

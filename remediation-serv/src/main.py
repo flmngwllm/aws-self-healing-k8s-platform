@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from .awsutils import send_sns_alert, save_alert_to_dynamodb, get_incidents_from_dynamodb
 from fastapi import Request
-
+from .k8_utls import list_deployments
 app = FastAPI()
 
 class Alert(BaseModel):
@@ -40,6 +40,9 @@ async def receive_alert(request: Request):
 
     alert = Alert(**payload)
     print(f"Received alert: {alert.id} with severity {alert.severity} and message: {alert.message}")
+
+    list_deployments()
+    
     save_alert_to_dynamodb(alert.id, alert.severity, alert.message)
     send_sns_alert(alert.id, alert.severity, alert.message)
 
