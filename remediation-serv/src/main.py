@@ -38,7 +38,7 @@ async def receive_alert(request: Request):
             print(f"Received alert: {alert_id} with severity {severity} and message: {message}")
 
             remediation_action = None
-            
+
             if alert_id == "SelfHealTestAlert":
                 restart_deployment("self-heal-app-deployment")
                 remediation_action = "Restarted deployment: self-heal-app-deployment"
@@ -50,9 +50,14 @@ async def receive_alert(request: Request):
     alert = Alert(**payload)
     print(f"Received alert: {alert.id} with severity {alert.severity} and message: {alert.message}")
 
-   
+    remediation_action = None
 
-    save_alert_to_dynamodb(alert.id, alert.severity, alert.message)
+    if alert.id == "SelfHealTestAlert":
+        restart_deployment("self-heal-app-deployment")
+        print("Restarted deployment: self-heal-app-deployment")
+        remediation_action = "Restarted deployment: self-heal-app-deployment"
+
+    save_alert_to_dynamodb(alert.id, alert.severity, alert.message, remediation_action)
     send_sns_alert(alert.id, alert.severity, alert.message)
 
     return {"status": "alert received"}
