@@ -5,4 +5,4 @@ resources:
   - remediation/rbac.yaml
   - remediation/deployment.yaml
   - remediation/service.yaml
-  - monitoring/test-alert-rule.yaml
+  
