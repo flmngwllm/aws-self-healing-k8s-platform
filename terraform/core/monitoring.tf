@@ -8,53 +8,53 @@ resource "helm_release" "kube_prometheus_stack" {
   wait             = true
 
   values = [
-  yamlencode({
-    alertmanager = {
-      enabled = true
+    yamlencode({
+      alertmanager = {
+        enabled = true
 
-      config = {
-        global = {
-          resolve_timeout = "5m"
-        }
+        config = {
+          global = {
+            resolve_timeout = "5m"
+          }
 
-        route = {
-          receiver        = "null"
-          group_by        = ["alertname"]
-          group_wait      = "10s"
-          group_interval  = "30s"
-          repeat_interval = "5m"
+          route = {
+            receiver        = "null"
+            group_by        = ["alertname"]
+            group_wait      = "10s"
+            group_interval  = "30s"
+            repeat_interval = "5m"
 
-          routes = [
+            routes = [
+              {
+                receiver = "remediation-webhook"
+                matchers = [
+                  "alertname =~ SelfHeal.*"
+                ]
+              }
+            ]
+          }
+
+          receivers = [
             {
-              receiver = "remediation-webhook"
-              matchers = [
-                "alertname =~ SelfHeal.*"
+              name = "null"
+            },
+            {
+              name = "remediation-webhook"
+              webhook_configs = [
+                {
+                  url           = "http://remediation-serv-service.default.svc.cluster.local/alert"
+                  send_resolved = true
+                }
               ]
             }
           ]
         }
 
-        receivers = [
-          {
-            name = "null"
-          },
-          {
-            name = "remediation-webhook"
-            webhook_configs = [
-              {
-                url           = "http://remediation-serv-service.default.svc.cluster.local/alert"
-                send_resolved = true
-              }
-            ]
-          }
-        ]
+        alertmanagerSpec = {
+          replicas = 1
+        }
       }
-
-      alertmanagerSpec = {
-        replicas = 1
-      }
-    }
-  })
-]
+    })
+  ]
 }
 
