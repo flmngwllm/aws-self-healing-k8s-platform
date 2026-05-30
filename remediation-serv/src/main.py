@@ -22,8 +22,10 @@ def get_incidents():
 
 @app.post("/alert")
 async def receive_alert(request: Request):
-    payload = await request.json()
 
+    payload = await request.json()
+    
+    list_deployments()
     if "alerts" in payload:
         for alert in payload["alerts"]:
             alert_id = alert.get("labels", {}).get("alertname", "unknown-alert")
@@ -34,7 +36,6 @@ async def receive_alert(request: Request):
             )
 
             print(f"Received alert: {alert_id} with severity {severity} and message: {message}")
-            list_deployments()
             save_alert_to_dynamodb(alert_id, severity, message)
             send_sns_alert(alert_id, severity, message)
         return {"status": "alerts received"}
