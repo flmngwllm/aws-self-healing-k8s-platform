@@ -22,21 +22,12 @@ def send_sns_alert(alert_id, severity, message):
     )
 
 
-def save_alert_to_dynamodb(alert_id, severity, message):
+def save_alert_to_dynamodb(alert_id, severity, message, remediation_action=None):
     if not DYNAMODB_TABLE_NAME:
         print("DYNAMODB_TABLE_NAME does not exist. Unable to save alert.")
         return
     
-    if severity == 'critical':
-        remediation_action = "restarted pod"
-        print("restarted pod")
-    else:
-        remediation_action = None
-
-    if severity == 'critical':
-        status = "remediated"
-    else:
-        status = "open"
+    status = "remediated" if remediation_action else "open"
 
     table = dynamodb.Table(DYNAMODB_TABLE_NAME)
     table.put_item(
@@ -60,5 +51,5 @@ def get_incidents_from_dynamodb():
     items = response.get('Items', [])
     
     for item in items:
-        print(f"Incident ID: {item('incident_id')}, Severity: {item('severity')}, Message: {item('alert_message')}, Status: {item('status')}, Remediation Action: {item('remediation_action')}")
+        print(f"Incident ID: {item.get('incident_id')}, Severity: {item.get('severity')}, Message: {item.get('alert_message')}, Status: {item.get('status')}, Remediation Action: {item.get('remediation_action')}")
     return items

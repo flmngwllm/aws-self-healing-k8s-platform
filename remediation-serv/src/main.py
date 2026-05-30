@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from .awsutils import send_sns_alert, save_alert_to_dynamodb, get_incidents_from_dynamodb
 from fastapi import Request
-from .k8_utils import list_deployments, restart_deployment
+from .k8_utils import restart_deployment
 
 app = FastAPI()
 
@@ -25,8 +25,7 @@ def get_incidents():
 async def receive_alert(request: Request):
 
     payload = await request.json()
-
-    list_deployments()
+  
     if "alerts" in payload:
         for alert in payload["alerts"]:
             alert_id = alert.get("labels", {}).get("alertname", "unknown-alert")
@@ -38,10 +37,13 @@ async def receive_alert(request: Request):
 
             print(f"Received alert: {alert_id} with severity {severity} and message: {message}")
 
+            remediation_action = None
+            
             if alert_id == "SelfHealTestAlert":
                 restart_deployment("self-heal-app-deployment")
+                remediation_action = "Restarted deployment: self-heal-app-deployment"
 
-            save_alert_to_dynamodb(alert_id, severity, message)
+            save_alert_to_dynamodb(alert_id, severity, message, remediation_action)
             send_sns_alert(alert_id, severity, message)
         return {"status": "alerts received"}
 
