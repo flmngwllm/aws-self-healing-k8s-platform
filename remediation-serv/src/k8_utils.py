@@ -1,4 +1,5 @@
 from kubernetes import client, config
+from datetime import datetime
 
 def get_apps_api():
     config.load_incluster_config()
@@ -13,3 +14,23 @@ def list_deployments():
 
     for deployment in deployments.items:
         print(f"Deployment Name: {deployment.metadata.name}")
+
+def restart_deployment(deployment_name):
+
+    apps_v1 = get_apps_api()
+
+    apps_v1.patch_namespaced_deployment(
+        name=deployment_name,
+        namespace="default",
+        body={
+            "spec": {
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "kubectl.kubernetes.io/restartedAt": datetime.utcnow().isoformat()
+                        }
+                    }
+                }
+            }
+        }
+    )
