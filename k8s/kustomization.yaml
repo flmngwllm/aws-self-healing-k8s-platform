@@ -2,6 +2,7 @@ resources:
   - app/deployment.yaml
   - app/service.yaml
   - remediation/serviceaccount.yaml
+  - remediation/rbac.yaml
   - remediation/deployment.yaml
   - remediation/service.yaml
   - monitoring/test-alert-rule.yaml
