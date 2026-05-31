@@ -39,7 +39,7 @@ async def receive_alert(request: Request):
 
             remediation_action = None
 
-            if alert_id == "SelfHealAppDown":
+            if alert_id == "SelfHealAppDown" and alert.get("status") == "firing":
                 restart_deployment("self-heal-app-deployment")
                 remediation_action = "Restarted deployment: self-heal-app-deployment"
 
