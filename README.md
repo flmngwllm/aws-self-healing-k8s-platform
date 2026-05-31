@@ -32,8 +32,11 @@ This project demonstrates a production-style DevOps and GitOps workflow with aut
 - GitOps workflow using ArgoCD
 - Automated Kubernetes deployments from Git commits
 - IRSA-based secure AWS access from Kubernetes pods
-- Incident ingestion endpoint using FastAPI
-- DynamoDB incident storage
+- Prometheus monitoring and alert evaluation
+- Alertmanager webhook routing
+- FastAPI remediation service
+- Kubernetes deployment restart remediation
+- DynamoDB incident storage and remediation tracking
 - SNS alert notifications
 - Kubernetes LoadBalancer services
 - Infrastructure and application CI/CD separation
@@ -50,11 +53,18 @@ aws-self-healing-k8s-platform/
 │       └── deploy.yml
 │
 ├── app/
+│   ├── src/
+│   │   └── main.py
 │   ├── Dockerfile
-│   ├── requirements.txt
-│   └── main.py
+│   └── requirements.txt
+│   
 │
 ├── remediation-serv/
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── awsutils.py
+│   │   ├── k8s_utils.py
+│   │   ├── main.py
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── main.py
@@ -68,6 +78,7 @@ aws-self-healing-k8s-platform/
 │   │   ├── eks_oidc.tf
 │   │   ├── iam.tf
 │   │   ├── main.tf
+│   │   ├── monitoring.tf
 │   │   ├── outputs.tf
 │   │   ├── sns.tf
 │   │   ├── variables.tf
@@ -78,8 +89,16 @@ aws-self-healing-k8s-platform/
 │
 ├── k8s/
 │   ├── kustomization.yaml
+|   ├── monitoring/
+│   │   └── alerts.yaml
 │   ├── app/
+│   |   ├── deployment.yaml
+│   │   └── service.yaml
 │   └── remediation/
+│       ├── deployment.yaml
+│       ├── rbac.yaml
+│       ├── service.yaml
+│       └── serviceaccount.yaml
 │
 └── README.md
 ```
@@ -197,11 +216,12 @@ The remediation service is a FastAPI application deployed to Kubernetes.
 
 ### Responsibilities
 
-- Receive alert payloads
-- Log incidents
-- Store incidents in DynamoDB
+- RReceive Alertmanager webhook payloads
+- Evaluate incoming alert conditions
+- Execute Kubernetes remediation actions
+- Restart Kubernetes deployments
+- Store incidents and remediation history in DynamoDB
 - Send SNS notifications
-- Simulate remediation actions
 
 ### Example Endpoint Test
 
@@ -209,9 +229,9 @@ The remediation service is a FastAPI application deployed to Kubernetes.
 curl -X POST http://<LOAD_BALANCER_URL>/alert \
   -H "Content-Type: application/json" \
   -d '{
-    "id":"alert-gitops-001",
+    "id":"SelfHealAppDown",
     "severity":"critical",
-    "message":"GitOps endpoint test"
+    "message":"Testing app down remediation"
   }'
 ```
 
@@ -219,6 +239,32 @@ Expected response:
 
 ```json
 {"status":"alert received"}
+```
+
+---
+
+## Self-Healing Workflow
+
+The remediation service is a FastAPI application deployed to Kubernetes.
+
+### Responsibilities
+
+- Prometheus evaluates deployment and cluster health.
+- Alertmanager forwards alerts to the remediation service.
+- FastAPI receives and processes the alert.
+- Kubernetes remediation actions execute.
+- Incident history is stored in DynamoDB.
+- SNS notifications are sent.
+
+### Example Incident Output
+
+```
+{ 
+  "incident_id": "SelfHealAppDown",
+ "alert_message": "Testing app down remediation", 
+ "remediation_action": "Restarted deployment: self-heal-app-deployment",
+  "severity": "critical", "status": "remediated" 
+}
 ```
 
 ---
@@ -350,26 +396,20 @@ Completed:
 - ECR image build and push workflow
 - ArgoCD GitOps deployment
 - IRSA authentication for remediation service
+- Prometheus monitoring
+- Alertmanager integration
+- FastAPI remediation service
+- Kubernetes deployment restart remediation
 - DynamoDB incident storage
 - SNS notification delivery
-- End-to-end manual alert test
-
-Planned next phase:
-
-- Prometheus
-- Alertmanager
-- Grafana
-- automatic alert triggering
-- real Kubernetes remediation actions
+- End-to-end self-healing workflow
 
 ---
 
 ## Future Improvements
 
-- Prometheus monitoring
-- Alertmanager integration
+- Scale-based remediation
 - Grafana dashboards
-- Automatic pod remediation
 - Horizontal Pod Autoscaling
 - HTTPS with cert-manager
 - ExternalDNS
