@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: self-heal-app-down 
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: self-heal-app-down-group
+      rules:
+        - alert: SelfHealAppDown
+          expr: kube_deployment_status_replicas_available{deployment="self-heal-app-deployment"} < 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Self-heal app is down"
+            description: "The self-heal deployment has no available replicas for more than 5 minutes."
