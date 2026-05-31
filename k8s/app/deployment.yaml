@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: self-heal-app
-        image: 831274730062.dkr.ecr.us-east-1.amazonaws.com/self-heal-app:e3ee7ca25c4a9b52444f61b31705d238b2632923
+        image: 831274730062.dkr.ecr.us-east-1.amazonaws.com/self-heal-app:0c15083ecd0d6ddba1acb8961cafa8dea708fc26
         ports:
         - containerPort: 8000
